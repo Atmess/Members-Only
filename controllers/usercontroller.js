@@ -64,7 +64,7 @@ async function getMessage(req,res) {
     if(SearchQuery){
         messages= await db.searchMessages(SearchQuery)
     }else{
-        messages= await db.getMessage()
+        messages= await db.getmessageUser()
     }
     res.render("index", { title: "Mini Messageboard", messages:messages})
 }

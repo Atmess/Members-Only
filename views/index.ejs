@@ -38,7 +38,13 @@
       <strong>Title:</strong> <%= message.title %> <br>
       <strong>Message:</strong> <%= message.text %> <br>
       <strong>Added:</strong> <%= message.timestamp %><br>
-      <strong>Author:</strong> <%= message.user_id %>
+      <strong>Author:</strong> 
+      <% if (user.membership_status || user.is_admin) { %>
+    <%= message.username %>
+  <!-- If they are a standard user, hide it! -->
+  <% } else { %>
+    Anonymous 
+  <% } %>
     </li>
     <!-- Add this Delete Form -->
     <form action="/delete/<%= message.id %>" method="POST">

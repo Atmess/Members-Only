@@ -7,8 +7,9 @@ async function InsertUser(firstName, lastName, username, hashedPassword) {
   `;
   await Pool.query(SQL, [firstName, lastName, username, hashedPassword]);
 }
-
-
+async function getmessageUser() {
+    await Pool.query('SELECT messages.*, users.username FROM messages JOIN users ON messages.user_id = users.id;')
+}
 
 async function getMessage() {
     const {rows}= await Pool.query("SELECT * FROM messages");
@@ -32,4 +33,4 @@ async function searchMessages(searchTerm) {
     return rows;
 }
 
-module.exports={InsertUser,InsertMesssage,DeleteMessage,searchMessages,getMessage}
+module.exports={InsertUser,InsertMesssage,DeleteMessage,searchMessages,getMessage,getmessageUser}
