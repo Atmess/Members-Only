@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+</head>
+<body>
+
+
+  <% if (locals.user) { %>
+    <h1>WELCOME BACK <%= user.username %></h1>
+    <a href="/log-out">LOG OUT</a>
+    
+    <h2>Messages Board</h2>
+       <button onclick="document.getElementById('newmessages').style.display='inline';
+       ">Create new message</button>
+       <div id="newmessages" style="display: none;">
+  <h1>Add a New Message</h1>
+    
+    <!-- Your form goes here -->
+    <form method="POST" action="/new" onsubmit="document.getElementById('newmessages').style.display='none';
+    ">    
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title">
+
+        <label for="message">Message:</label>
+        <input type="text" id="message" name="text">      
+        <button type="submit" >Submit</button>
+    </form>
+    </div>
+        <form action="/" method="GET">
+  <input type="text" name="search" placeholder="Search usernames...">
+  <button type="submit">Search</button>
+</form>
+<ul>
+  <% messages.forEach((message)=>{ %>
+    <li>
+      <strong>Title:</strong> <%= message.title %> <br>
+      <strong>Message:</strong> <%= message.text %> <br>
+      <strong>Added:</strong> <%= message.timestamp %><br>
+      <strong>Author:</strong> <%= message.user_id %>
+    </li>
+    <!-- Add this Delete Form -->
+    <form action="/delete/<%= message.id %>" method="POST">
+      <button type="submit">Delete</button>
+    </form>
+  <% }) %>
+</ul>
+    <!-- Later, you will loop through your database messages right here -->
+    
+  <% } else { %>
+    <h1>Welcome to the Clubhouse</h1>
+    <p>You must be logged in to see the messages.</p>
+    <a href="/log-in">Log In</a>
+    <a href="/sign-up">Sign Up</a>
+  <% } %>
+
+</body>
+</html>
