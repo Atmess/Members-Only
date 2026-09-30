@@ -2,7 +2,6 @@
 require("dotenv").config(); // To read your DATABASE_URL from .env
 const { Client } = require("pg");
 const bcrypt = require("bcryptjs");
-
 const dbUrl = process.env.DATABASE_URL;
 
 const dummyUsers = [
@@ -44,6 +43,49 @@ async function seedDatabase() {
   await client.connect();
 
   try {
+
+
+
+    console.log("Creating tables if they don't exist...");
+    
+    // 1. Create Users Table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        first_name VARCHAR(255) NOT NULL,
+        last_name VARCHAR(255) NOT NULL,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        membership_status BOOLEAN DEFAULT false,
+        is_admin BOOLEAN DEFAULT false
+      );
+    `);
+
+    // 2. Create Messages Table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        text TEXT NOT NULL,
+        added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+    
+    // (Optional: Create the session table for connect-pg-simple if you want)
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS "session" (
+        "sid" varchar NOT NULL COLLATE "default",
+        "sess" json NOT NULL,
+        "expire" timestamp(6) NOT NULL,
+        CONSTRAINT "session_pkey" PRIMARY KEY ("sid")
+      );
+    `);
+
+    console.log("Tables created successfully!");
+
+
+
     for (const user of dummyUsers) {
       console.log(`Hashing password and creating user: ${user.username}...`);
       
