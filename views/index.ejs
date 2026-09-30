@@ -2,20 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+    <link rel="stylesheet" href="/stylesheets/style.css">
   <title>Home</title>
 </head>
 <body>
 
 
   <% if (locals.user) { %>
+    <div style="background-color:  rgba(103, 188, 250, 0.9);">
+    <div>
     <h1>WELCOME BACK <%= user.username %></h1>
+   <p>Membership status: 
+  <% if (user.is_admin) { %>
+    <strong>Admin</strong>
+  <% } else if (user.membership_status) { %>
+    <strong>Member</strong>
+  <% } else { %>
+    Not a member
+  <% } %>
+</p>
+
+
+   </div>
+    <div>
+       <% if ( user.membership_status===false) { %>
+      <button onclick="
+        document.getElementById('joinmembership').style.display='inline' 
+        ">join member</button>
+  <!-- If they are a standard user, hide it! -->
+  <% } else { %>
+    --
+  <% } %>      
+      <% if ( user.membership_status===true && user.is_admin===false ) { %>
+      <button onclick="
+        document.getElementById('becomeadmin').style.display='inline'
+        ">be admin</button>
+  <!-- If they are a standard user, hide it! -->
+  <% } else  { %>
+    --
+  <% } %>
+    </div>
+     
+
+    <form action="/joinmembership" method="post" style="display: none;" id="joinmembership" onsubmit="
+    document.getElementById('joinmembership').style.display='none'
+    ">
+      <input type="text" placeholder="input password here" name="password">
+      <button type="submit">Join membership Now</button>
+    </form>
+    <form action="/becomeadmin" method="post" style="display: none;" id="becomeadmin" onsubmit="
+    document.getElementById('becomeadmin').style.display='none'
+    ">
+      <input type="text" placeholder="input password here" name="password">
+      <button type="submit">be admin Now</button>
+    </form>
+    <br>
+
     <a href="/log-out">LOG OUT</a>
-    
+    </div>
+    <div style="background-color:  rgba(103, 188, 230, 0.9);">
     <h2>Messages Board</h2>
-       <button onclick="document.getElementById('newmessages').style.display='inline';
+       
+        <form action="/" method="GET">
+  <input type="text" name="search" placeholder="Search here...">
+  <button type="submit">Search</button>
+</form>
+<br>
+<button onclick="document.getElementById('newmessages').style.display='inline';
        ">Create new message</button>
        <div id="newmessages" style="display: none;">
-  <h1>Add a New Message</h1>
+  <h2>Add a New Message</h2>
     
     <!-- Your form goes here -->
     <form method="POST" action="/new" onsubmit="document.getElementById('newmessages').style.display='none';
@@ -28,10 +84,7 @@
         <button type="submit" >Submit</button>
     </form>
     </div>
-        <form action="/" method="GET">
-  <input type="text" name="search" placeholder="Search usernames...">
-  <button type="submit">Search</button>
-</form>
+<br>
 <ul>
   <% messages.forEach((message)=>{ %>
     <li>
@@ -46,10 +99,16 @@
     Anonymous 
   <% } %>
     </li>
-    <!-- Add this Delete Form -->
-    <form action="/delete/<%= message.id %>" method="POST">
+
+ <% if ( user.is_admin) { %>
+   <form action="/delete/<%= message.id %>" method="POST">
       <button type="submit">Delete</button>
     </form>
+  <!-- If they are a standard user, hide it! -->
+  <% } else { %>
+    --
+  <% } %>
+    <!-- Add this Delete Form -->    
   <% }) %>
 </ul>
     <!-- Later, you will loop through your database messages right here -->
@@ -60,6 +119,6 @@
     <a href="/log-in">Log In</a>
     <a href="/sign-up">Sign Up</a>
   <% } %>
-
+</div>
 </body>
 </html>

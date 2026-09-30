@@ -32,5 +32,6 @@ indexRouter.get("/log-out",controller.logout );
 indexRouter.get("/log-in",controller.loginGet);
 indexRouter.post("/new",controller.CreateMessagePost)
 indexRouter.post("/delete/:id",controller.DeleteMessagePost)
-
+indexRouter.post("/joinmembership",controller.joinmembershipPost)
+indexRouter.post("/becomeadmin",controller.beadmin)
 module.exports=indexRouter;

@@ -1,6 +1,8 @@
 const db = require("../db/query")
 const bcrypt = require("bcryptjs")
 const {validationResult}= require("express-validator")
+require("dotenv").config();
+
 
 
 async function gethome(req,res) {
@@ -10,7 +12,7 @@ async function gethome(req,res) {
     if(SearchQuery){
         messages= await db.searchMessages(SearchQuery)
     }else{
-        messages= await db.getMessage()
+        messages= await db.getmessageUser()
     }
     res.render("index", { messages:messages,user:req.user})
 
@@ -86,6 +88,35 @@ async function DeleteMessagePost(req,res) {
     res.redirect("/");
 }
 
+async function joinmembershipPost(req,res) {
+const password = process.env.PASSWORD_MEMBER;
+const inputpassw = req.body.password;
+if(inputpassw===password){
+  try{
+    const userid = req.user.id
+    await db.joinmembership(userid)
+    res.redirect("/")
+  }catch (error){
+    console.log(error)
+  }
+}else{
+  res.redirect("/")
+}
+}
+async function beadmin(req,res) {
+  const password = process.env.PASSWORD_ADMIN
+  const inputpassw = req.body.password
+  if(inputpassw===password){
+    try{
+        const userid = req.user.id
+        await db.beadmin(userid)
+        res.redirect("/")
+    }catch(error){
+      console.log(error)
+    }
+  }else{
+    res.redirect("/")
+  }
+}
 
-
-module.exports={gethome,createUsersPost,createUsersGet,logout,loginGet,getMessage,CreateMessageGet,CreateMessagePost,DeleteMessagePost}
+module.exports={gethome,createUsersPost,createUsersGet,logout,loginGet,getMessage,CreateMessageGet,CreateMessagePost,DeleteMessagePost,joinmembershipPost,beadmin}
